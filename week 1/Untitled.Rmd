@@ -1,0 +1,152 @@
+---
+title: 'ALY6010:  Final Project — Milestone 1 '
+subtitle: 'Week 1'
+author: "Shamim Sherafati" 
+date: "2022-11-08"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+### Importing packages
+
+```{r}
+#install.packages("plyr")
+#install.packages("dplyr")
+#install.packages("tidyr")
+#install.packages("tidyverse")
+#install.packages("psych")
+#install.packages("ggpubr")
+#install.packages("ggplot2")
+#install.packages("plotly")
+#install.packages("moments")
+#install.packages('gmodels')
+
+library(plyr) 
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(psych)
+library(ggpubr)
+library(ggplot2)
+library(plotly)
+library(moments)
+library(gmodels)
+```
+### Import the file *car details.csv*
+
+```{r}
+cardata = read.csv("~/Documents/ALY 6010/Car details v3.csv")
+cardata
+```
+###Dimension of the dataset
+```{r}
+dim(cardata)
+```
+###Head and tail of the Dataset
+```{r}
+headtail(cardata)
+```
+###Summary of the Dataset
+
+```{r}
+summary(cardata)
+```
+### Data Cleaning
+
+```{r}
+# convert string to numeric for engine and mileage
+cardata$mileage <- as.numeric (gsub ('[a-zA-Z/ ]','', cardata$mileage))
+cardata$engine <- as.numeric (gsub ('[a-zA-Z/ ]','', cardata$engine))
+str(cardata$mileage)
+str(cardata$engine)
+
+# Drop blank column and NA data
+colSums(is.na(cardata))
+cardata$mileage<- gsub ("^%|^%", "Empty", cardata$mileage)
+
+cardata$seller_type <- as.factor(cardata$seller_type)
+cardata$transmission <- as.factor(cardata$transmission)
+cardata$owner <- as.factor(cardata$owner)
+
+# Rename column 
+names(cardata)[names(cardata) == 'km_driven'] <- 'Duration_drivern'
+head(cardata)
+
+# Remove the top 70 % and bottom 25%
+cardata.clean <- cardata[5689:2032,] # Remove the top 70 % and bottom 25%
+cardata.clean
+
+
+```
+
+
+```{r}
+nrow(cardata.clean) #number of data after cleaning
+```
+```{r}
+str(cardata.clean)
+#get the Mean, Min, Max, STD of selling_price by year
+cardata.clean %>%
+group_by(selling_price)%>%
+summarise_at(vars(year),list(Mean=mean, Min=min, Max=max,STD=sd))
+
+#get the Mean, Min, Max, STD of each engine by year
+cardata.clean %>%
+group_by(engine)%>%
+summarise_at(vars(year),list(Mean=mean, Min=min, Max=max,STD=sd))
+```
+
+### Table For seller_type and owner
+
+```{r}
+#1st type of- Frequency Table
+cardata<- table(cardata.clean$seller_type, cardata.clean$owner)
+cardata
+```
+### Frequency Tables For transmission and year
+
+```{r}
+#Frequency Table for transmission and year
+ftable(cardata.clean$year, cardata.clean$transmission)
+
+```
+### Cross Table for 'seller_type' and 'owner' and 'selling_price'
+
+```{r}
+#create CrossTable for 'seller_type' and 'owner'
+CrossTable(cardata.clean$seller_type, cardata.clean$owner,
+                dnn = c("seller_type", "owner "))
+
+```
+
+###Engine capacity and maximum power
+
+```{r}
+#create ggplot scatter type for engine and max_power
+library(ggplot2)
+ggplot(cardata.clean, aes(x = max_power, y = engine)) +
+    geom_point()
+```
+### box plot
+
+```{r}
+#create box plot for housing and different ages
+
+boxplot(mileage ~ engine, data = cardata.clean, 
+   xlab = "Number of Cylinders",
+   ylab = "Miles Per Gallon", 
+   main = "Mileage Data",
+   notch = TRUE, 
+   varwidth = TRUE, 
+   col = c("green","yellow","purple"),
+   names = c("High","Medium","Low")
+)
+```
+
+
+
+
+
+
+
