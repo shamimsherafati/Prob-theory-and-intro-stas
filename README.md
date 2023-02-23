@@ -1,13 +1,9 @@
 ## ALY6010 Project
 ### Language: R
 
-## Documents1
+## Capstone documents
 - [Capstone.PDF](Capstone-ALY-6010-Sherafati.pdf)
 - [Capstone.R](Capstone-ALY-6010-Sherafati.R)
-
-## Documents2
-- [Milestone1](Sherafati_M1-Final Project- Milestone1.R)
-- [Milestone2](Sherafati_M4- Milestone2.R)
 
 ## Licence
 
